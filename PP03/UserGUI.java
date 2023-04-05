@@ -1,23 +1,12 @@
 package PP03;
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 public class UserGUI extends JPanel {
 	
-	 private JLabel label1;
+	  private JLabel label1;
 	  private JLabel label2;
 	  private JTextField field1;
 	  private JTextField field2;
@@ -28,11 +17,31 @@ public class UserGUI extends JPanel {
 	  private JScrollPane jp;
 	  private PayRoll payRoll;
 	  private String fileName = "PayRoll.txt";
-	  
+
+	private static JTextField idTextField;
+	private static JTextField firstNameTextField;
+	private static JTextField lastNameTextField;
+	private static JTextField employeeStatusTextField;
+	private static JTextField streetTextField;
+	private static JTextField houseNumberTextField;
+	private static JTextField cityTextField;
+	private static JTextField stateTextField;
+	private static JTextField zipCodeTextField;
+	private static JTextField payrollIdTextField;
+	private static JTextField startDateTextField;
+	private static JTextField endDateTextField;
+	private static JTextField incomeTextField;
+	private static JTextField numberOfMonthsTextField;
+	private static JTextField payIdTextField;
+	private static JTextField payTextField;
+	private static JTextField payRateTextField;
+
+	private static JButton addEmployeeButton;
+
 	  public UserGUI() {
 		  
                  // prompt the user to input the number of pay records
-                 int n; // is the number of pay records for employees
+                 int n = 2; // is the number of pay records for employees
 		 payRoll = new PayRoll(fileName,n);
 
 	    initGUI();
@@ -61,31 +70,108 @@ public class UserGUI extends JPanel {
 	  } // end of constructor
 
 	  private void initGUI(){
-	      
-		  label1 = new JLabel("Type some text here:");
-	      label2 = new JLabel("Your text will appear here:");
-	      field1 = new JTextField("This is the default text", 30);
-	      field2 = new JTextField(30);
-	      textArea = new JTextArea(5, 15);
-	      textArea.setEditable(false);
-	      textArea.setLineWrap(true);
-	      textArea.setWrapStyleWord(true);
-	      
-	      // testing
-	      textArea.append("This is an editable JTextArea. " +
-	    		    "A text area is a \"plain\" text component, " +
-	    		    "which means that although it can display text " +
-	    		    "in any font, all of the text is in the same font.");
-	      
-	      jp = new JScrollPane(textArea);
-	      
-	      String[] listStrings = { "","Laptops", "Tablets", "Cell Phones" };
-	      combList = new JComboBox(listStrings);
-	      
-	      TransferButton = new JButton("Transfer");
-	      CloseButton = new JButton("Close");
-	      
-	      field2.setEditable(false);
+
+		  JPanel mainPanel = new JPanel();
+		  mainPanel.setLayout(new GridBagLayout());
+		  GridBagConstraints mainGBC = new GridBagConstraints();
+		  mainGBC.gridx = 0;
+		  mainGBC.gridy = 0;
+		  mainGBC.anchor = GridBagConstraints.NORTHWEST;
+		  mainGBC.fill = GridBagConstraints.HORIZONTAL;
+		  mainGBC.weightx = 1;
+		  mainGBC.weighty = 1;
+
+		  // Employee information and Payroll section (merged)
+		  JPanel employeePanel = new JPanel();
+		  employeePanel.setLayout(new GridBagLayout());
+		  GridBagConstraints gbc = new GridBagConstraints();
+		  gbc.anchor = GridBagConstraints.WEST;
+		  gbc.insets = new Insets(5, 5, 5, 5);
+
+		  // Employee Information section
+		  addLabel(employeePanel, "Employee:", Color.BLUE, gbc, 0, 0);
+		  idTextField = addLabelAndTextField(employeePanel, "ID", 10, gbc, 0, 1, true);
+		  firstNameTextField = addLabelAndTextField(employeePanel, "First Name", 10, gbc, 2, 1, true);
+		  lastNameTextField = addLabelAndTextField(employeePanel, "Last Name", 10, gbc, 4, 1, true);
+		  addLabel(employeePanel, "Employee Status", null, gbc, 0, 2);
+
+		  addRadioButton(employeePanel, "Full Time", "Part Time", gbc, 0, 3);
+
+		  addLabel(employeePanel, "Address", null, gbc, 0, 4);
+		  streetTextField = addLabelAndTextField(employeePanel, "Street", 20, gbc, 0, 5, true);
+		  houseNumberTextField = addLabelAndTextField(employeePanel, "H/Apt Number", 5, gbc, 2, 5, true);
+		  cityTextField = addLabelAndTextField(employeePanel, "City", 10, gbc, 0, 6, true);
+		  stateTextField = addLabelAndTextField(employeePanel, "State", 2, gbc, 2, 6, true);
+		  zipCodeTextField = addLabelAndTextField(employeePanel, "Zipcode", 5, gbc, 4, 6, true);
+
+		  addEmployeeButton = new JButton("Add Employee");
+		  addEmployeeButton.addActionListener(e -> {
+			  // Your code to handle the button click event goes here
+			  System.out.println("Add Employee button clicked");
+			  idTextField.setText("Testing");
+		  });
+		  gbc.gridx = 1;
+		  gbc.gridy++;
+		  gbc.fill = GridBagConstraints.NONE;
+		  gbc.anchor = GridBagConstraints.CENTER;
+		  gbc.gridwidth = 1;
+		  employeePanel.add(addEmployeeButton, gbc);
+
+		  gbc.anchor = GridBagConstraints.WEST;
+		  gbc.gridwidth = 1;
+
+
+		  // Payroll section
+		  gbc.gridy = 8;
+		  addLabel(employeePanel, "Payroll:", Color.BLUE, gbc, 0, gbc.gridy);
+		  payrollIdTextField = addLabelAndTextField(employeePanel, "ID", 10, gbc, 0, ++gbc.gridy, true);
+		  startDateTextField = addLabelAndTextField(employeePanel, "Start Date", 10, gbc, 2, gbc.gridy, true);
+		  endDateTextField = addLabelAndTextField(employeePanel, "End Date", 10, gbc, 4, gbc.gridy, true);
+
+		  gbc.gridy = 10; // Update this value if you add more elements to the previous sections
+		  addLabel(employeePanel, "Pay Records:", Color.BLUE, gbc, 0, gbc.gridy);
+		  incomeTextField = addLabelAndTextField(employeePanel, "Monthly Income:", 10, gbc, 0, ++gbc.gridy, true);
+		  numberOfMonthsTextField = addLabelAndTextField(employeePanel, "Number of Months:", 10, gbc, 2, gbc.gridy, true);
+		  payIdTextField = addLabelAndTextField(employeePanel, "ID:", 10, gbc, 4, gbc.gridy, true);
+		  payTextField = addLabelAndTextField(employeePanel, "Pay Hours:", 10, gbc, 0, ++gbc.gridy, false);
+		  payRateTextField = addLabelAndTextField(employeePanel, "Pay Rate:", 10, gbc, 2, gbc.gridy, false);
+
+		  JButton addPayRecordButton = new JButton("Add Pay Record");
+		  addPayRecordButton.addActionListener(e -> {
+			  // Your code to handle the button click event goes here
+			  System.out.println("addPayRecordButton button clicked");
+		  });
+		  gbc.gridx = 1;
+		  gbc.gridy++;
+		  gbc.gridwidth = 3;
+		  gbc.fill = GridBagConstraints.NONE;
+		  gbc.anchor = GridBagConstraints.CENTER;
+		  employeePanel.add(addPayRecordButton, gbc);
+
+		  gbc.gridy++;
+		  gbc.gridx = 0;
+		  gbc.gridwidth = 6; // Span the text across the panel
+		  gbc.anchor = GridBagConstraints.WEST;
+		  addLabel(employeePanel, "Current Employee Records and Stat (Total & Average Pay):", Color.BLUE, gbc, gbc.gridx, gbc.gridy);
+
+		  // Add large 4-line, 80-column text box
+		  JTextArea recordsTextArea = new JTextArea(4, 80);
+		  recordsTextArea.setEditable(false);
+		  gbc.gridy++;
+		  gbc.fill = GridBagConstraints.HORIZONTAL;
+		  JScrollPane scrollPane = new JScrollPane(recordsTextArea);
+		  employeePanel.add(scrollPane, gbc);
+
+		  mainPanel.add(employeePanel, mainGBC);
+
+
+		  int result = JOptionPane.showConfirmDialog(null, mainPanel, "Employee Information", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+		  if (result == JOptionPane.OK_OPTION) {
+			  System.out.println("User clicked OK");
+		  } else {
+			  System.out.println("User clicked Cancel or closed the dialog");
+		  }
 
 	  }// end of creating objects method
 
@@ -156,6 +242,53 @@ public class UserGUI extends JPanel {
         f.setVisible(true);
 
 
+
+	}
+
+	private static void createJOptionPane() {
+
+	}
+
+
+
+
+	private static void addLabel(JPanel panel, String text, Color color, GridBagConstraints gbc, int gridx, int gridy) {
+		gbc.gridx = gridx;
+		gbc.gridy = gridy;
+		JLabel label = new JLabel(text);
+		if (color != null) {
+			label.setForeground(color);
+		}
+		panel.add(label, gbc);
+	}
+
+	private static JTextField addLabelAndTextField(JPanel panel, String labelText, int textFieldColumns, GridBagConstraints gbc, int gridx, int gridy, boolean editable) {
+		gbc.gridx = gridx;
+		gbc.gridy = gridy;
+		panel.add(new JLabel(labelText), gbc);
+
+		JTextField textField = new JTextField(textFieldColumns);
+		textField.setEditable(editable);
+		gbc.gridx++;
+		panel.add(textField, gbc);
+		return textField;
+	}
+
+
+	private static void addRadioButton(JPanel panel, String text1, String text2, GridBagConstraints gbc, int gridx, int gridy) {
+		gbc.gridx = gridx;
+		gbc.gridy = gridy;
+		JRadioButton radioButton1 = new JRadioButton(text1);
+		panel.add(radioButton1, gbc);
+
+		gbc.gridx++;
+		JRadioButton radioButton2 = new JRadioButton(text2);
+		panel.add(radioButton2, gbc);
+
+		// Create a ButtonGroup to ensure only one radio button is selected at a time
+		ButtonGroup radioButtonGroup = new ButtonGroup();
+		radioButtonGroup.add(radioButton1);
+		radioButtonGroup.add(radioButton2);
 	}
 
 }
