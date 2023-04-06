@@ -18,6 +18,9 @@ public class UserGUI extends JPanel {
 	  private PayRoll payRoll;
 	  private String fileName = "PayRoll.txt";
 
+	private JPanel employeePanel;
+	private JPanel mainPanel;
+	private GridBagConstraints mainGBC;
 	private static JTextField idTextField;
 	private static JTextField firstNameTextField;
 	private static JTextField lastNameTextField;
@@ -37,43 +40,43 @@ public class UserGUI extends JPanel {
 	private static JTextField payRateTextField;
 
 	private static JButton addEmployeeButton;
+	private JButton addPayRecordButton;
 
 	  public UserGUI() {
 		  
                  // prompt the user to input the number of pay records
                  int n = 2; // is the number of pay records for employees
-		 payRoll = new PayRoll(fileName,n);
+		  payRoll = new PayRoll(fileName,n);
 
-	    initGUI();
-	    doTheLayout();
+		  addEmployeeButton = new JButton("Add Employee");
+		  addEmployeeButton.addActionListener(e -> {
 
-	    TransferButton.addActionListener( new java.awt.event.ActionListener() {
-	        public void actionPerformed(ActionEvent e){
-	            transfer();
-	            }
-	    });
-	    
-	    CloseButton.addActionListener( new java.awt.event.ActionListener() {
-	        public void actionPerformed(ActionEvent e){
-	            close();
-	            }
-	    });
-	    
-	    combList.addActionListener( new java.awt.event.ActionListener() {
-	        public void actionPerformed(ActionEvent e){
-	            //transfer_actionPerformed(e);
-	        	updateTextarea();
-	            
-	            }
-	    });
+
+		  });
+
+		  addPayRecordButton = new JButton("Add Pay Record");
+		  addPayRecordButton.addActionListener(e -> {
+			  // Your code to handle the button click event goes here
+			  System.out.println("addPayRecordButton button clicked");
+		  });
+
+		  initGUI();
+		  doTheLayout();
 
 	  } // end of constructor
 
 	  private void initGUI(){
+		  mainPanel = new JPanel();
+		  mainGBC = new GridBagConstraints();
+		  employeePanel = new JPanel();
 
-		  JPanel mainPanel = new JPanel();
+		  mainPanel.add(employeePanel, mainGBC);
+	  }// end of creating objects method
+
+	  private void doTheLayout(){
+
+
 		  mainPanel.setLayout(new GridBagLayout());
-		  GridBagConstraints mainGBC = new GridBagConstraints();
 		  mainGBC.gridx = 0;
 		  mainGBC.gridy = 0;
 		  mainGBC.anchor = GridBagConstraints.NORTHWEST;
@@ -82,7 +85,7 @@ public class UserGUI extends JPanel {
 		  mainGBC.weighty = 1;
 
 		  // Employee information and Payroll section (merged)
-		  JPanel employeePanel = new JPanel();
+
 		  employeePanel.setLayout(new GridBagLayout());
 		  GridBagConstraints gbc = new GridBagConstraints();
 		  gbc.anchor = GridBagConstraints.WEST;
@@ -104,12 +107,6 @@ public class UserGUI extends JPanel {
 		  stateTextField = addLabelAndTextField(employeePanel, "State", 2, gbc, 2, 6, true);
 		  zipCodeTextField = addLabelAndTextField(employeePanel, "Zipcode", 5, gbc, 4, 6, true);
 
-		  addEmployeeButton = new JButton("Add Employee");
-		  addEmployeeButton.addActionListener(e -> {
-			  // Your code to handle the button click event goes here
-			  System.out.println("Add Employee button clicked");
-			  idTextField.setText("Testing");
-		  });
 		  gbc.gridx = 1;
 		  gbc.gridy++;
 		  gbc.fill = GridBagConstraints.NONE;
@@ -136,11 +133,6 @@ public class UserGUI extends JPanel {
 		  payTextField = addLabelAndTextField(employeePanel, "Pay Hours:", 10, gbc, 0, ++gbc.gridy, false);
 		  payRateTextField = addLabelAndTextField(employeePanel, "Pay Rate:", 10, gbc, 2, gbc.gridy, false);
 
-		  JButton addPayRecordButton = new JButton("Add Pay Record");
-		  addPayRecordButton.addActionListener(e -> {
-			  // Your code to handle the button click event goes here
-			  System.out.println("addPayRecordButton button clicked");
-		  });
 		  gbc.gridx = 1;
 		  gbc.gridy++;
 		  gbc.gridwidth = 3;
@@ -172,35 +164,6 @@ public class UserGUI extends JPanel {
 		  } else {
 			  System.out.println("User clicked Cancel or closed the dialog");
 		  }
-
-	  }// end of creating objects method
-
-	  private void doTheLayout(){
-
-	      JPanel top = new JPanel();
-	      JPanel center = new JPanel();
-	      JPanel bottom = new JPanel();
-
-	      top.setLayout( new FlowLayout());
-	      top.add(label1);
-	      top.add(field1);
-	      top.add(combList);
-
-	      center.setPreferredSize( new Dimension( 10, 155 ) );
-	      center.setLayout( new GridLayout(2,2));
-	      center.add(label2);
-	      center.add(field2);
-	      center.add(new JLabel(""));
-	      center.add(jp);
-
-	      bottom.setLayout( new FlowLayout());
-	      bottom.add(TransferButton);
-	      bottom.add(CloseButton);
-
-	      setLayout( new BorderLayout());
-	      add(top, "North");
-	      add(center, "Center");
-	      add(bottom, "South");
 
 	  }// end of Layout method
 
@@ -237,20 +200,7 @@ public class UserGUI extends JPanel {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container contentPane = f.getContentPane();
         contentPane.add( new UserGUI());
-        f.pack();
-        //setSize(200, 200);
-        f.setVisible(true);
-
-
-
 	}
-
-	private static void createJOptionPane() {
-
-	}
-
-
-
 
 	private static void addLabel(JPanel panel, String text, Color color, GridBagConstraints gbc, int gridx, int gridy) {
 		gbc.gridx = gridx;
