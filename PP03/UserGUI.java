@@ -162,7 +162,7 @@ public class UserGUI extends JPanel {
 		  if (result == JOptionPane.OK_OPTION) {
 			  System.out.println("User clicked OK");
 		  } else {
-			  System.out.println("User clicked Cancel or closed the dialog");
+			  close();
 		  }
 
 	  }// end of Layout method
