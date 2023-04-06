@@ -1,30 +1,18 @@
 package PP03;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
 import javax.swing.*;
 
 public class UserGUI extends JPanel {
-	
-	  private JLabel label1;
-	  private JLabel label2;
-	  private JTextField field1;
-	  private JTextField field2;
-	  private JButton TransferButton;
-	  private JButton CloseButton;
-	  private JTextArea textArea;
-	  private JComboBox combList;
-	  private JScrollPane jp;
-	  private PayRoll payRoll;
-	  private String fileName = "PayRoll.txt";
-
+	private PayRoll payRoll;
+	private String fileName = "PayRoll.txt";
 	private JPanel employeePanel;
 	private JPanel mainPanel;
 	private GridBagConstraints mainGBC;
 	private static JTextField idTextField;
 	private static JTextField firstNameTextField;
 	private static JTextField lastNameTextField;
-	private static JTextField employeeStatusTextField;
+	private static ButtonGroup employeeStatus;
 	private static JTextField streetTextField;
 	private static JTextField houseNumberTextField;
 	private static JTextField cityTextField;
@@ -42,15 +30,21 @@ public class UserGUI extends JPanel {
 	private static JButton addEmployeeButton;
 	private JButton addPayRecordButton;
 
+
 	  public UserGUI() {
 		  
                  // prompt the user to input the number of pay records
-                 int n = 2; // is the number of pay records for employees
+                 int n = 6; // is the number of pay records for employees
 		  payRoll = new PayRoll(fileName,n);
+
 
 		  addEmployeeButton = new JButton("Add Employee");
 		  addEmployeeButton.addActionListener(e -> {
-
+			  	employeeStatus.getSelection().isPressed();
+				payRoll.addEmployee("employee",idTextField.getText(),firstNameTextField.getText(),
+						lastNameTextField.getText(),employeeStatusTextField.getText(),
+						streetTextField.getText(),houseNumberTextField.getText(),
+						cityTextField.getText(), stateTextField.getText() ,zipCodeTextField.getText());
 
 		  });
 
@@ -98,7 +92,7 @@ public class UserGUI extends JPanel {
 		  lastNameTextField = addLabelAndTextField(employeePanel, "Last Name", 10, gbc, 4, 1, true);
 		  addLabel(employeePanel, "Employee Status", null, gbc, 0, 2);
 
-		  addRadioButton(employeePanel, "Full Time", "Part Time", gbc, 0, 3);
+		  employeeStatue = addRadioButton(employeePanel, "Full Time", "Part Time", gbc, 0, 3);
 
 		  addLabel(employeePanel, "Address", null, gbc, 0, 4);
 		  streetTextField = addLabelAndTextField(employeePanel, "Street", 20, gbc, 0, 5, true);
@@ -149,6 +143,11 @@ public class UserGUI extends JPanel {
 		  // Add large 4-line, 80-column text box
 		  JTextArea recordsTextArea = new JTextArea(4, 80);
 		  recordsTextArea.setEditable(false);
+		  for (PayRecord record : payRoll.getPayRecords()) {
+			  if(record != null){
+				  recordsTextArea.append(record.toString());
+			  }
+		  }
 		  gbc.gridy++;
 		  gbc.fill = GridBagConstraints.HORIZONTAL;
 		  JScrollPane scrollPane = new JScrollPane(recordsTextArea);
@@ -169,25 +168,11 @@ public class UserGUI extends JPanel {
 
 	 
 	  void transfer(){
-	        String mytext = field1.getText();
-	        field2.setText(mytext);
+
 	  }// end of transfer action event method
 	  
 	  void updateTextarea(){
-		  
-		 		 
-		  if(combList.getSelectedItem().toString().compareToIgnoreCase("") == 0)
-			  textArea.append("This is an editable JTextArea. " +
-		    		    "A text area is a \"plain\" text component, " +
-		    		    "which means that although it can display text " +
-		    		    "in any font, all of the text is in the same font.");
-			 else if (combList.getSelectedItem().toString().compareToIgnoreCase( "Laptops") == 0)
-				 textArea.setText("You have selected Laptops item name");
-			 else if (combList.getSelectedItem().toString().compareToIgnoreCase("Tablets") == 0)
-				 textArea.setText("You have not selected Tablets item name");
-			 else if (combList.getSelectedItem().toString().compareToIgnoreCase("Cell Phones") == 0)
-				 textArea.setText("You have not selected Cell Phones item name");
-		  
+
 	  }
 
 	  void close(){
@@ -196,10 +181,11 @@ public class UserGUI extends JPanel {
 
 
 	public static void main(String[] args) {
-	   JFrame f = new JFrame("Pay Roll");
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Container contentPane = f.getContentPane();
-        contentPane.add( new UserGUI());
+
+		JFrame f = new JFrame("Pay Roll");
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Container contentPane = f.getContentPane();
+		contentPane.add( new UserGUI());
 	}
 
 	private static void addLabel(JPanel panel, String text, Color color, GridBagConstraints gbc, int gridx, int gridy) {
@@ -225,7 +211,7 @@ public class UserGUI extends JPanel {
 	}
 
 
-	private static void addRadioButton(JPanel panel, String text1, String text2, GridBagConstraints gbc, int gridx, int gridy) {
+	private static ButtonGroup addRadioButton(JPanel panel, String text1, String text2, GridBagConstraints gbc, int gridx, int gridy) {
 		gbc.gridx = gridx;
 		gbc.gridy = gridy;
 		JRadioButton radioButton1 = new JRadioButton(text1);
@@ -239,6 +225,7 @@ public class UserGUI extends JPanel {
 		ButtonGroup radioButtonGroup = new ButtonGroup();
 		radioButtonGroup.add(radioButton1);
 		radioButtonGroup.add(radioButton2);
+		return radioButtonGroup;
 	}
 
 }

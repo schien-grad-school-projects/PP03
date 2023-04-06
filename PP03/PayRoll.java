@@ -16,9 +16,19 @@ public class PayRoll {
     private double totalNetPay;
     private double avgNetPay;
 
+    private ArrayList<Employee> employeeArrayList = new ArrayList<>();
+
     public PayRoll(String fileName, int n) {
         this.fileName = fileName;
         this.payRecords = new PayRecord[n];
+
+        try {
+            readFromFile();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -30,14 +40,15 @@ public class PayRoll {
         Scanner input = new Scanner(file);
 
 		int num = 0;
-		Employee[] employees = new Employee[payRecords.length];
+		ArrayList employees = new ArrayList();
         while (input.hasNext()) {
             String line = input.nextLine();
-            String[] parts = line.split(",");
+            String[] parts = line.split(", ");
             String type = parts[0].trim();
             if (type.equals("employee")) {
-                employees[num] = (createEmployee(parts));
+                employees.add(createEmployee(parts));
             } else {
+
                 createPayRecord(parts, employees);
             }
 			num++;
@@ -45,7 +56,6 @@ public class PayRoll {
 
         // Close the file
         input.close();
-        JOptionPane.showMessageDialog(null, "Done Reading data from file " + fileName);
     }
 
 
@@ -63,7 +73,7 @@ public class PayRoll {
 
     public Employee createEmployee(String[] parts) {
         // creates a new Employee object and add it to the employees array, you need to pass parameters to this method
-        String statusString = parts[4];
+        String statusString = parts[4].trim();
         Status status = Status.valueOf(getEnumName(statusString));
 
         int eId = Integer.parseInt(parts[1]);
@@ -93,7 +103,7 @@ public class PayRoll {
         return new Address(street, houseNumber, city, state, zipCode);
     }
 
-    public void createPayRecord(String[] parts, Employee[] employees) throws ParseException {
+    public void createPayRecord(String[] parts, ArrayList<Employee> employees) throws ParseException {
         // creates a new PayRecord for an Employee object and add it to  the payRecords array, you need to pass parameters to this method
         int rID = Integer.parseInt(parts[1]);
         int eID = Integer.parseInt(parts[2]);
@@ -124,8 +134,8 @@ public class PayRoll {
         noRecords++;
     }
 
-    public void displayPayRecord() {
-
+    public void displayPayRecord(JTextField j) {
+        j.setText(j.getText() + "");
         // it shows all payroll records for all currently added employee and the total net pay and average net pay in the GUI text area
         // at should append data to text area, it must not overwrite data in the GUI text area
 
@@ -140,4 +150,16 @@ public class PayRoll {
 		avgNetPay = totalNetPay / payRecords.length;
         return avgNetPay;
     }
+
+    public PayRecord[] getPayRecords() {
+        return payRecords;
+    }
+
+    public void addEmployee(String employee, String id, String first, String last, String employeeStatus,
+                            String streetAddress, String houseNumber, String city, String state, String zip) {
+        employeeArrayList.add(createEmployee(new String[]{employee,id,first,last,
+                employeeStatus,streetAddress,houseNumber,city,state,zip}));
+    }
 }
+
+

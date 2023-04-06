@@ -82,6 +82,6 @@ public class PayRecord {
 				", grossPay=" + grossPay() +
 				", incomeTax=" + payTax.compIncomeTax(grossPay()) +
 				", netPay=" + netPay() +
-				'}';
+				"}\n";
 	}
 }
