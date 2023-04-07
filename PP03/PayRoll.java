@@ -1,6 +1,7 @@
 package PP03;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -62,7 +63,7 @@ public class PayRoll {
     }
 
 
-    public void writeToFile() {
+    public void writeToFile(Component parent) {
         // write employees' pay records to the PayRecord.txt file, it should add employee pay record to the current file data
         File file = new File("PayRecord.txt");
         PrintWriter output = null;
@@ -73,13 +74,13 @@ public class PayRoll {
         }
 
         for (int i = 0; i < payRecords.length; i++)
-            if(payRecords[i]!=null){
+            if (payRecords[i] != null) {
                 output.print(payRecords[i].toString());
             }
 
 
         output.close();
-        JOptionPane.showMessageDialog(null, "Done Writing to file PayRecord.txt");
+        JOptionPane.showMessageDialog(parent, "Done Writing to file PayRecord.txt");
     }
 
     public Employee createEmployee(String[] parts) {
@@ -133,7 +134,7 @@ public class PayRoll {
         int payPeriodId = Integer.parseInt(parts[5]);
         PayPeriod payPeriod = new PayPeriod(payPeriodId, pStartDate, pEndDate);
 
-        if (payRecords.length < noRecords){
+        if (payRecords.length <= noRecords) {
             JOptionPane.showMessageDialog(null,
                     "There are more records in file than records requested"
             );
@@ -161,12 +162,26 @@ public class PayRoll {
     }
 
 
+    public double getTotalNetPay() {
+        double netPay = 0.0;
+        for (PayRecord record : payRecords) {
+            if (record != null) {
+                netPay += record.netPay();
+            }
+        }
+        return netPay;
+    }
+
     public double avgNetPay() {
         // returns the average of the total net pay of all added employees
+        int numRecordsNotNull = 0;
         for (PayRecord record : payRecords) {
-            totalNetPay += record.netPay();
+            if (record != null) {
+                totalNetPay += record.netPay();
+                numRecordsNotNull++;
+            }
         }
-        avgNetPay = totalNetPay / payRecords.length;
+        avgNetPay = totalNetPay / numRecordsNotNull;
         return avgNetPay;
     }
 
@@ -203,9 +218,10 @@ public class PayRoll {
             //TODO add gui
         }
     }
-    public boolean isPayRecordFull(){
-        for (int i = 0; i < payRecords.length ; i++) {
-            if(payRecords[i] == null){
+
+    public boolean isPayRecordFull() {
+        for (int i = 0; i < payRecords.length; i++) {
+            if (payRecords[i] == null) {
                 return false;
             }
         }

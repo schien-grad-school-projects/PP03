@@ -33,7 +33,7 @@ public class UserGUI extends JPanel {
     private JPanel mainPanel;
     private GridBagConstraints mainGBC;
     private JButton addPayRecordButton;
-	private JButton closeButton;
+    private JButton closeButton;
     private JTextArea recordsTextArea = new JTextArea(4, 80);
 
 
@@ -51,7 +51,7 @@ public class UserGUI extends JPanel {
             }
         }
         // prompt the user to input the number of pay records
-         // is the number of pay records for employees
+        // is the number of pay records for employees
         payRoll = new PayRoll(fileName, n);
 
 
@@ -77,7 +77,7 @@ public class UserGUI extends JPanel {
         addPayRecordButton = new JButton("Add Pay Record");
         addPayRecordButton.addActionListener(e -> {
             String invalidFieldNames = validatePayRecord();
-            if(invalidFieldNames.isEmpty()){
+            if (invalidFieldNames.isEmpty()) {
                 if (hourlyButton.isSelected()) {
                     payRoll.addPayRecordHourly("payRecord", payRecordIdTextField.getText(), employeeIdTextField.getText(),
                             payHoursTextField.getText(), payRateTextField.getText(), payPeriodIdTextField.getText(),
@@ -88,29 +88,26 @@ public class UserGUI extends JPanel {
                             startDateTextField.getText(), endDateTextField.getText());
                 }
                 payRoll.displayPayRecord(recordsTextArea, payRecordIdTextField.getText());
-                if(payRoll.isPayRecordFull()){
-                    payRoll.writeToFile();
+                if (payRoll.isPayRecordFull()) {
+                    payRoll.writeToFile(mainPanel);
                     System.exit(0);
                 }
                 JOptionPane.showMessageDialog(mainPanel, "Record Added", "Success", JOptionPane.INFORMATION_MESSAGE);
-            }
-            else{
+            } else {
                 JOptionPane.showMessageDialog(mainPanel, "Failed to add PayRoll! Errors with below fields\n" + invalidFieldNames, "Error", JOptionPane.ERROR_MESSAGE);
             }
 
         });
 
-		closeButton = new JButton("Close");
-		closeButton.addActionListener(e -> {
-			payRoll.writeToFile();
-			System.exit(0);
-		});
+        closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> {
+            close();
+        });
 
         initGUI();
         doTheLayout();
 
     } // end of constructor
-
 
 
     public static void main(String[] args) {
@@ -173,14 +170,14 @@ public class UserGUI extends JPanel {
     }
 
     private String validatePayRecord() {
-        return intInput(payPeriodIdTextField.getText(),"Pay Period Id")
-                + dateInput(startDateTextField.getText(),"Start Date")
+        return intInput(payPeriodIdTextField.getText(), "Pay Period Id")
+                + dateInput(startDateTextField.getText(), "Start Date")
                 + dateInput(endDateTextField.getText(), "End Date")
-                + intInput(payRecordIdTextField.getText(),"PayRecordID")
-                + (hourlyButton.isSelected() ? doubleInput(payHoursTextField.getText(),"Pay Hours"):
-                doubleInput(monthlyIncomeTextField.getText(),"Monthly Income"))
-                + (hourlyButton.isSelected() ? doubleInput(payRateTextField.getText(),"Pay Rate"):
-                doubleInput(numberOfMonthsTextField.getText(),"Number Of Months"));
+                + intInput(payRecordIdTextField.getText(), "PayRecordID")
+                + (hourlyButton.isSelected() ? doubleInput(payHoursTextField.getText(), "Pay Hours") :
+                doubleInput(monthlyIncomeTextField.getText(), "Monthly Income"))
+                + (hourlyButton.isSelected() ? doubleInput(payRateTextField.getText(), "Pay Rate") :
+                doubleInput(numberOfMonthsTextField.getText(), "Number Of Months"));
 
     }
 
@@ -306,24 +303,33 @@ public class UserGUI extends JPanel {
         mainPanel.add(employeePanel, mainGBC);
 
 
-		JOptionPane optionPane = new JOptionPane(mainPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[] { closeButton,addPayRecordButton,addEmployeeButton });
+        JOptionPane optionPane = new JOptionPane(mainPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[]{closeButton, addPayRecordButton, addEmployeeButton});
 
 // Create a JDialog to display the custom JOptionPane
-		JDialog dialog = new JDialog();
-		dialog.setTitle("Employee Information");
-		dialog.setModal(true);
-		dialog.setContentPane(optionPane);
-		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		dialog.pack();
-		dialog.setLocationRelativeTo(null); // To center the dialog on the screen
-		dialog.setVisible(true);
+        JDialog dialog = new JDialog();
+        dialog.setTitle("Employee Information");
+        dialog.setModal(true);
+        dialog.setContentPane(optionPane);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.pack();
+        dialog.setLocationRelativeTo(null); // To center the dialog on the screen
+        dialog.setVisible(true);
 
 
     }// end of Layout method
 
     void close() {
+        payRoll.writeToFile(mainPanel);
+        displayFinalEmployeePay();
         System.exit(0);
     }// end of transfer action event method
+
+    private void displayFinalEmployeePay() {
+        String output = "Total Net Pay:\t$" + String.format("%.2f", payRoll.getTotalNetPay());
+        output += "\nAverage Net Pay:\t$" + String.format("%.2f", payRoll.avgNetPay());
+
+        JOptionPane.showMessageDialog(mainPanel, output, "Summary", JOptionPane.INFORMATION_MESSAGE);
+    }
 
     private String intInput(String m, String fieldName) {
         int intUserInput = 0;
@@ -363,7 +369,7 @@ public class UserGUI extends JPanel {
         try {
             Date pStartDate = dateFormat.parse(strUserInput);
         } catch (ParseException e) {
-            return fieldName+"\n";
+            return fieldName + "\n";
         }
 
         return "";
