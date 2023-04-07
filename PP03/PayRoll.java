@@ -135,9 +135,7 @@ public class PayRoll {
         PayPeriod payPeriod = new PayPeriod(payPeriodId, pStartDate, pEndDate);
 
         if (payRecords.length <= noRecords) {
-            JOptionPane.showMessageDialog(null,
-                    "There are more records in file than records requested"
-            );
+            JOptionPane.showMessageDialog(null, "There are more records in file than records requested");
             System.exit(1);
         }
         if (parts[3].contains("<m>")) {
