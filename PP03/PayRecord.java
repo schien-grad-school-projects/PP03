@@ -68,6 +68,10 @@ public class PayRecord {
 		return grossPay() - taxes;
   }
 
+	public int getrID() {
+		return rID;
+	}
+
 	@Override
 	public String toString() {
 		return "PayRecord{" +

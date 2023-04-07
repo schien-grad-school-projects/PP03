@@ -6,7 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Scanner;
 
 public class PayRoll {
 
@@ -39,8 +42,8 @@ public class PayRoll {
         File file = new File(fileName);
         Scanner input = new Scanner(file);
 
-		int num = 0;
-		ArrayList employees = new ArrayList();
+        int num = 0;
+        ArrayList employees = new ArrayList();
         while (input.hasNext()) {
             String line = input.nextLine();
             String[] parts = line.split(", ");
@@ -51,7 +54,7 @@ public class PayRoll {
 
                 createPayRecord(parts, employees);
             }
-			num++;
+            num++;
         }
 
         // Close the file
@@ -61,14 +64,14 @@ public class PayRoll {
 
     public void writeToFile() throws FileNotFoundException {
         // write employees' pay records to the PayRecord.txt file, it should add employee pay record to the current file data
-		File file = new File("PayRecord.txt");
-		PrintWriter output = new PrintWriter(file);
+        File file = new File("PayRecord.txt");
+        PrintWriter output = new PrintWriter(file);
 
-		for (int i = 0; i < payRecords.length; i++)
-			output.println(payRecords[i].toString());
+        for (int i = 0; i < payRecords.length; i++)
+            output.println(payRecords[i].toString());
 
-		output.close();
-		JOptionPane.showMessageDialog(null, "Done Writing to file PayRecord.txt");
+        output.close();
+        JOptionPane.showMessageDialog(null, "Done Writing to file PayRecord.txt");
     }
 
     public Employee createEmployee(String[] parts) {
@@ -105,49 +108,51 @@ public class PayRoll {
 
     public void createPayRecord(String[] parts, ArrayList<Employee> employees) throws ParseException {
         // creates a new PayRecord for an Employee object and add it to  the payRecords array, you need to pass parameters to this method
-        int rID = Integer.parseInt(parts[1]);
-        int eID = Integer.parseInt(parts[2]);
+        int payRecordId = Integer.parseInt(parts[1]);
+        int employeeId = Integer.parseInt(parts[2]);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         Date pStartDate = dateFormat.parse(parts[6]);
         Date pEndDate = dateFormat.parse(parts[7]);
 
-		Employee employee = null;
-		for (Employee currentEmployee : employees) {
-			if (currentEmployee.geteID() == eID) {
-				employee = currentEmployee;
-			}
-		}
+        Employee employee = null;
+        for (Employee currentEmployee : employees) {
+            if (currentEmployee.geteID() == employeeId) {
+                employee = currentEmployee;
+            }
+        }
+
+        int payPeriodId = Integer.parseInt(parts[5]);
+        PayPeriod payPeriod = new PayPeriod(payPeriodId, pStartDate, pEndDate);
 
         if (parts[3].contains("<m>")) {
             double monthlyIncome = Double.parseDouble(parts[3].replace("<m>", ""));
             int numMonths = Integer.parseInt(parts[4].replace("<n>", ""));
-			//TODO not sure if the pay period is using the correct ID
-            PayPeriod payPeriod = new PayPeriod(eID, pStartDate, pEndDate);
-            payRecords[noRecords] = new PayRecord(rID, employee, payPeriod, monthlyIncome, numMonths);
+            payRecords[noRecords] = new PayRecord(payRecordId, employee, payPeriod, monthlyIncome, numMonths);
         } else {
             double hours = Double.parseDouble(parts[3].replace("<h>", ""));
             double rate = Double.parseDouble(parts[4].replace("<r>", ""));
-            PayPeriod payPeriod = new PayPeriod(eID, pStartDate, pEndDate);
-            payRecords[noRecords] = new PayRecord(rID, employee, payPeriod, hours, rate);
+            payRecords[noRecords] = new PayRecord(payRecordId, employee, payPeriod, hours, rate);
         }
         noRecords++;
     }
 
-    public void displayPayRecord(JTextField j) {
-        j.setText(j.getText() + "");
+    public void displayPayRecord(JTextArea j, String payRecordId) {
+        int pId = Integer.parseInt(payRecordId);
+        PayRecord record = Arrays.stream(payRecords).filter(payRecord -> payRecord.getrID() == pId).findFirst().get();
+
+        j.append(record.toString());
         // it shows all payroll records for all currently added employee and the total net pay and average net pay in the GUI text area
         // at should append data to text area, it must not overwrite data in the GUI text area
-
     }
 
 
     public double avgNetPay() {
         // returns the average of the total net pay of all added employees
-		for (PayRecord record : payRecords ) {
-			totalNetPay += record.netPay();
-		}
-		avgNetPay = totalNetPay / payRecords.length;
+        for (PayRecord record : payRecords) {
+            totalNetPay += record.netPay();
+        }
+        avgNetPay = totalNetPay / payRecords.length;
         return avgNetPay;
     }
 
@@ -155,10 +160,34 @@ public class PayRoll {
         return payRecords;
     }
 
-    public void addEmployee(String employee, String id, String first, String last, String employeeStatus,
+    public void addEmployee(String employeeType, String id, String first, String last, String employeeStatus,
                             String streetAddress, String houseNumber, String city, String state, String zip) {
-        employeeArrayList.add(createEmployee(new String[]{employee,id,first,last,
-                employeeStatus,streetAddress,houseNumber,city,state,zip}));
+
+        //TODO might need to check the types of these fields before creating the object
+        employeeArrayList.add(createEmployee(new String[]{employeeType, id, first, last,
+                employeeStatus, streetAddress, houseNumber, city, state, zip}));
+    }
+
+    public void addPayRecordHourly(String payRecordType, String payRecordID, String employeeId, String payHours, String payRate,
+                                   String payPeriodId, String startDate, String endDate) {
+        //TODO might need to check the types of these fields before creating the object
+        try {
+            createPayRecord(new String[]{payRecordType, payRecordID, employeeId, payHours, payRate,
+                    payPeriodId, startDate, endDate}, employeeArrayList);
+        } catch (ParseException e) {
+            //TODO add gui
+        }
+    }
+
+    public void addPayRecordFullTime(String payRecordType, String payRecordID, String employeeId, String monthlyIncome, String numberOfMonths,
+                                     String payPeriodId, String startDate, String endDate) {
+        try {
+            String formattedMonthlyIncome = monthlyIncome + "<m>";
+            createPayRecord(new String[]{payRecordType, payRecordID, employeeId, formattedMonthlyIncome, numberOfMonths,
+                    payPeriodId, startDate, endDate}, employeeArrayList);
+        } catch (ParseException e) {
+            //TODO add gui
+        }
     }
 }
 
