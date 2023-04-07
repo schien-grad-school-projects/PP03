@@ -56,9 +56,9 @@ public class UserGUI extends JPanel {
         addEmployeeButton.addActionListener(e -> {
 
             //Validate
-            String isValid = validateEmployee();
+            String invalidFieldNames = validateEmployee();
 
-            if (isValid.isEmpty()) {
+            if (invalidFieldNames.isEmpty()) {
                 String empStatusString = hourlyButton.isSelected() ? "HOURLY" : "FULLTIME";
                 payRoll.addEmployee("employee", employeeIdTextField.getText(), firstNameTextField.getText(),
                         lastNameTextField.getText(), empStatusString,
@@ -67,7 +67,7 @@ public class UserGUI extends JPanel {
                 setPayRecordFieldsEditability();
                 JOptionPane.showMessageDialog(mainPanel, "Employee Added", "Success", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(mainPanel, "Failed to add employee! Errors with below fields\n" + isValid, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mainPanel, "Failed to add employee! Errors with below fields\n" + invalidFieldNames, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 

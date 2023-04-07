@@ -133,7 +133,7 @@ public class PayRoll {
         int payPeriodId = Integer.parseInt(parts[5]);
         PayPeriod payPeriod = new PayPeriod(payPeriodId, pStartDate, pEndDate);
 
-        if (payRecords.length > noRecords){
+        if (payRecords.length < noRecords){
             JOptionPane.showMessageDialog(null,
                     "There are more records in file than records requested"
             );
