@@ -30,13 +30,25 @@ public class UserGUI extends JPanel {
     private JPanel mainPanel;
     private GridBagConstraints mainGBC;
     private JButton addPayRecordButton;
+	private JButton closeButton;
     private JTextArea recordsTextArea = new JTextArea(4, 80);
 
 
     public UserGUI() {
-
+        int n = 0;
+        while (n <= 0) {
+            try {
+                String input = JOptionPane.showInputDialog(null, "Enter the number of employees:", "Employee Count", JOptionPane.QUESTION_MESSAGE);
+                n = Integer.parseInt(input);
+                if (n <= 0) {
+                    JOptionPane.showMessageDialog(null, "Please enter a positive number.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Invalid input. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
         // prompt the user to input the number of pay records
-        int n = 6; // is the number of pay records for employees
+         // is the number of pay records for employees
         payRoll = new PayRoll(fileName, n);
 
 
@@ -65,7 +77,18 @@ public class UserGUI extends JPanel {
                         startDateTextField.getText(), endDateTextField.getText());
             }
             payRoll.displayPayRecord(recordsTextArea, payRecordIdTextField.getText());
+			if(payRoll.isPayRecordFull()){
+				payRoll.writeToFile();
+				System.exit(0);
+			}
+
         });
+
+		closeButton = new JButton("Close");
+		closeButton.addActionListener(e -> {
+			payRoll.writeToFile();
+			System.exit(0);
+		});
 
         initGUI();
         doTheLayout();
@@ -188,7 +211,6 @@ public class UserGUI extends JPanel {
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridwidth = 1;
-        employeePanel.add(addEmployeeButton, gbc);
 
         gbc.anchor = GridBagConstraints.WEST;
         gbc.gridwidth = 1;
@@ -219,7 +241,7 @@ public class UserGUI extends JPanel {
         gbc.gridwidth = 3;
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
-        employeePanel.add(addPayRecordButton, gbc);
+
 
         gbc.gridy++;
         gbc.gridx = 0;
@@ -242,13 +264,18 @@ public class UserGUI extends JPanel {
         mainPanel.add(employeePanel, mainGBC);
 
 
-        int result = JOptionPane.showConfirmDialog(null, mainPanel, "Employee Information", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		JOptionPane optionPane = new JOptionPane(mainPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[] { closeButton,addPayRecordButton,addEmployeeButton });
 
-        if (result == JOptionPane.OK_OPTION) {
-            System.out.println("User clicked OK");
-        } else {
-            close();
-        }
+// Create a JDialog to display the custom JOptionPane
+		JDialog dialog = new JDialog();
+		dialog.setTitle("Employee Information");
+		dialog.setModal(true);
+		dialog.setContentPane(optionPane);
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.pack();
+		dialog.setLocationRelativeTo(null); // To center the dialog on the screen
+		dialog.setVisible(true);
+
 
     }// end of Layout method
 

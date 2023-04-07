@@ -62,13 +62,21 @@ public class PayRoll {
     }
 
 
-    public void writeToFile() throws FileNotFoundException {
+    public void writeToFile() {
         // write employees' pay records to the PayRecord.txt file, it should add employee pay record to the current file data
         File file = new File("PayRecord.txt");
-        PrintWriter output = new PrintWriter(file);
+        PrintWriter output = null;
+        try {
+            output = new PrintWriter(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         for (int i = 0; i < payRecords.length; i++)
-            output.println(payRecords[i].toString());
+            if(payRecords[i]!=null){
+                output.print(payRecords[i].toString());
+            }
+
 
         output.close();
         JOptionPane.showMessageDialog(null, "Done Writing to file PayRecord.txt");
@@ -125,6 +133,12 @@ public class PayRoll {
         int payPeriodId = Integer.parseInt(parts[5]);
         PayPeriod payPeriod = new PayPeriod(payPeriodId, pStartDate, pEndDate);
 
+        if (payRecords.length > noRecords){
+            JOptionPane.showMessageDialog(null,
+                    "There are more records in file than records requested"
+            );
+            System.exit(1);
+        }
         if (parts[3].contains("<m>")) {
             double monthlyIncome = Double.parseDouble(parts[3].replace("<m>", ""));
             int numMonths = Integer.parseInt(parts[4].replace("<n>", ""));
@@ -188,6 +202,14 @@ public class PayRoll {
         } catch (ParseException e) {
             //TODO add gui
         }
+    }
+    public boolean isPayRecordFull(){
+        for (int i = 0; i < payRecords.length ; i++) {
+            if(payRecords[i] == null){
+                return false;
+            }
+        }
+        return true;
     }
 }
 
