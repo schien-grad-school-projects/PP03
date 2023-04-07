@@ -12,6 +12,9 @@ public class UserGUI extends JPanel {
 	private static JTextField idTextField;
 	private static JTextField firstNameTextField;
 	private static JTextField lastNameTextField;
+
+	private static JRadioButton hourlyButton;
+	private static JRadioButton weeklyButton;
 	private static ButtonGroup employeeStatus;
 	private static JTextField streetTextField;
 	private static JTextField houseNumberTextField;
@@ -40,18 +43,18 @@ public class UserGUI extends JPanel {
 
 		  addEmployeeButton = new JButton("Add Employee");
 		  addEmployeeButton.addActionListener(e -> {
-			  	employeeStatus.getSelection().isPressed();
-				payRoll.addEmployee("employee",idTextField.getText(),firstNameTextField.getText(),
-						lastNameTextField.getText(),employeeStatusTextField.getText(),
-						streetTextField.getText(),houseNumberTextField.getText(),
-						cityTextField.getText(), stateTextField.getText() ,zipCodeTextField.getText());
-
+			   if(hourlyButton.isSelected() || weeklyButton.isSelected() ){
+				   String empStatusString = hourlyButton.isSelected() ? "HOURLY" : "FULLTIME";
+				   payRoll.addEmployee("employee",idTextField.getText(),firstNameTextField.getText(),
+						   lastNameTextField.getText(),empStatusString,
+						   streetTextField.getText(),houseNumberTextField.getText(),
+						   cityTextField.getText(), stateTextField.getText() ,zipCodeTextField.getText());
+			   }
 		  });
 
 		  addPayRecordButton = new JButton("Add Pay Record");
 		  addPayRecordButton.addActionListener(e -> {
-			  // Your code to handle the button click event goes here
-			  System.out.println("addPayRecordButton button clicked");
+
 		  });
 
 		  initGUI();
@@ -92,7 +95,7 @@ public class UserGUI extends JPanel {
 		  lastNameTextField = addLabelAndTextField(employeePanel, "Last Name", 10, gbc, 4, 1, true);
 		  addLabel(employeePanel, "Employee Status", null, gbc, 0, 2);
 
-		  employeeStatue = addRadioButton(employeePanel, "Full Time", "Part Time", gbc, 0, 3);
+		  employeeStatus = addRadioButton(employeePanel, "Full Time", "Part Time", gbc, 0, 3);
 
 		  addLabel(employeePanel, "Address", null, gbc, 0, 4);
 		  streetTextField = addLabelAndTextField(employeePanel, "Street", 20, gbc, 0, 5, true);
@@ -214,17 +217,17 @@ public class UserGUI extends JPanel {
 	private static ButtonGroup addRadioButton(JPanel panel, String text1, String text2, GridBagConstraints gbc, int gridx, int gridy) {
 		gbc.gridx = gridx;
 		gbc.gridy = gridy;
-		JRadioButton radioButton1 = new JRadioButton(text1);
-		panel.add(radioButton1, gbc);
+		weeklyButton = new JRadioButton(text1);
+		panel.add(weeklyButton, gbc);
 
 		gbc.gridx++;
-		JRadioButton radioButton2 = new JRadioButton(text2);
-		panel.add(radioButton2, gbc);
+		hourlyButton = new JRadioButton(text2);
+		panel.add(hourlyButton, gbc);
 
 		// Create a ButtonGroup to ensure only one radio button is selected at a time
 		ButtonGroup radioButtonGroup = new ButtonGroup();
-		radioButtonGroup.add(radioButton1);
-		radioButtonGroup.add(radioButton2);
+		radioButtonGroup.add(weeklyButton);
+		radioButtonGroup.add(hourlyButton);
 		return radioButtonGroup;
 	}
 
