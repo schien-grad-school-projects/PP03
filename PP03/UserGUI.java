@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class UserGUI extends JPanel {
@@ -173,11 +174,12 @@ public class UserGUI extends JPanel {
         return intInput(payPeriodIdTextField.getText(), "Pay Period Id")
                 + dateInput(startDateTextField.getText(), "Start Date")
                 + dateInput(endDateTextField.getText(), "End Date")
-                + intInput(payRecordIdTextField.getText(), "PayRecordID")
-                + (hourlyButton.isSelected() ? doubleInput(payHoursTextField.getText(), "Pay Hours") :
-                doubleInput(monthlyIncomeTextField.getText(), "Monthly Income"))
-                + (hourlyButton.isSelected() ? doubleInput(payRateTextField.getText(), "Pay Rate") :
-                doubleInput(numberOfMonthsTextField.getText(), "Number Of Months"));
+                + validateWorkTimeline(startDateTextField.getText(),endDateTextField.getText())
+                + intInput(payRecordIdTextField.getText(),"PayRecordID")
+                + (hourlyButton.isSelected() ? doubleInput(payHoursTextField.getText(),"Pay Hours"):
+                doubleInput(monthlyIncomeTextField.getText(),"Monthly Income"))
+                + (hourlyButton.isSelected() ? doubleInput(payRateTextField.getText(),"Pay Rate"):
+                doubleInput(numberOfMonthsTextField.getText(),"Number Of Months"));
 
     }
 
@@ -374,4 +376,43 @@ public class UserGUI extends JPanel {
 
         return "";
     }
+
+    public static String validateWorkTimeline(String startDateString, String endDateString) {
+        String invalid = "Start End Date do not meet requirment";
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        try {
+            Date startDate = format.parse(startDateString);
+            Date endDate = format.parse(endDateString);
+
+            // Ensure start date is before end date
+            if (startDate.after(endDate)) {
+                return invalid;
+            }
+
+            Calendar startCalendar = Calendar.getInstance();
+            startCalendar.setTime(startDate);
+            int startYear = startCalendar.get(Calendar.YEAR);
+            int startMonth = startCalendar.get(Calendar.MONTH);
+
+            Calendar endCalendar = Calendar.getInstance();
+            endCalendar.setTime(endDate);
+            int endYear = endCalendar.get(Calendar.YEAR);
+            int endMonth = endCalendar.get(Calendar.MONTH);
+
+            int monthsBetween = (endYear - startYear) * 12 + (endMonth - startMonth);
+            if (endDate.before(startDate)) {
+                monthsBetween *= -1;
+            }
+
+            if (monthsBetween == 0 && startDate.compareTo(endDate) == 0) {
+                return invalid; // Less than a month has passed
+            } else {
+                return ""; // At least one day has passed
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return invalid;
+        }
+    }
+
 }
