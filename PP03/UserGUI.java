@@ -2,6 +2,9 @@ package PP03;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class UserGUI extends JPanel {
     private static JTextField employeeIdTextField;
@@ -73,21 +76,27 @@ public class UserGUI extends JPanel {
 
         addPayRecordButton = new JButton("Add Pay Record");
         addPayRecordButton.addActionListener(e -> {
-
-            if (hourlyButton.isSelected()) {
-                payRoll.addPayRecordHourly("payRecord", payRecordIdTextField.getText(), employeeIdTextField.getText(),
-                        payHoursTextField.getText(), payRateTextField.getText(), payPeriodIdTextField.getText(),
-                        startDateTextField.getText(), endDateTextField.getText());
-            } else {
-                payRoll.addPayRecordFullTime("payRecord", payRecordIdTextField.getText(), employeeIdTextField.getText(),
-                        monthlyIncomeTextField.getText(), numberOfMonthsTextField.getText(), payPeriodIdTextField.getText(),
-                        startDateTextField.getText(), endDateTextField.getText());
+            String invalidFieldNames = validatePayRecord();
+            if(invalidFieldNames.isEmpty()){
+                if (hourlyButton.isSelected()) {
+                    payRoll.addPayRecordHourly("payRecord", payRecordIdTextField.getText(), employeeIdTextField.getText(),
+                            payHoursTextField.getText(), payRateTextField.getText(), payPeriodIdTextField.getText(),
+                            startDateTextField.getText(), endDateTextField.getText());
+                } else {
+                    payRoll.addPayRecordFullTime("payRecord", payRecordIdTextField.getText(), employeeIdTextField.getText(),
+                            monthlyIncomeTextField.getText(), numberOfMonthsTextField.getText(), payPeriodIdTextField.getText(),
+                            startDateTextField.getText(), endDateTextField.getText());
+                }
+                payRoll.displayPayRecord(recordsTextArea, payRecordIdTextField.getText());
+                if(payRoll.isPayRecordFull()){
+                    payRoll.writeToFile();
+                    System.exit(0);
+                }
+                JOptionPane.showMessageDialog(mainPanel, "Record Added", "Success", JOptionPane.INFORMATION_MESSAGE);
             }
-            payRoll.displayPayRecord(recordsTextArea, payRecordIdTextField.getText());
-			if(payRoll.isPayRecordFull()){
-				payRoll.writeToFile();
-				System.exit(0);
-			}
+            else{
+                JOptionPane.showMessageDialog(mainPanel, "Failed to add PayRoll! Errors with below fields\n" + invalidFieldNames, "Error", JOptionPane.ERROR_MESSAGE);
+            }
 
         });
 
@@ -101,6 +110,8 @@ public class UserGUI extends JPanel {
         doTheLayout();
 
     } // end of constructor
+
+
 
     public static void main(String[] args) {
 
@@ -159,6 +170,18 @@ public class UserGUI extends JPanel {
                 + strInput(stateTextField.getText(), "State")
                 + intInput(zipCodeTextField.getText(), "ZipCode")
                 + ((hourlyButton.isSelected() || weeklyButton.isSelected()) ? "" : "Employee Status");
+    }
+
+    private String validatePayRecord() {
+        return intInput(payPeriodIdTextField.getText(),"Pay Period Id")
+                + dateInput(startDateTextField.getText(),"Start Date")
+                + dateInput(endDateTextField.getText(), "End Date")
+                + intInput(payRecordIdTextField.getText(),"PayRecordID")
+                + (hourlyButton.isSelected() ? doubleInput(payHoursTextField.getText(),"Pay Hours"):
+                doubleInput(monthlyIncomeTextField.getText(),"Monthly Income"))
+                + (hourlyButton.isSelected() ? doubleInput(payRateTextField.getText(),"Pay Rate"):
+                doubleInput(numberOfMonthsTextField.getText(),"Number Of Months"));
+
     }
 
     private void setPayRecordFieldsEditability() {
@@ -309,7 +332,20 @@ public class UserGUI extends JPanel {
 
             if (intUserInput < 1) throw new NumberFormatException();
 
-        } catch (NumberFormatException ex) {
+        } catch (Exception ex) {
+            return fieldName + "\n";
+        }
+        return "";
+    }
+
+    private String doubleInput(String m, String fieldName) {
+        double intUserInput = 0;
+        try {
+            intUserInput = Double.parseDouble(m);
+
+            if (intUserInput < 1) throw new NumberFormatException();
+
+        } catch (Exception ex) {
             return fieldName + "\n";
         }
         return "";
@@ -319,6 +355,17 @@ public class UserGUI extends JPanel {
         if (strUserInput.isEmpty() || strUserInput.equals(" ")) {
             return fieldName + "\n";
         }
+        return "";
+    }
+
+    private String dateInput(String strUserInput, String fieldName) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        try {
+            Date pStartDate = dateFormat.parse(strUserInput);
+        } catch (ParseException e) {
+            return fieldName+"\n";
+        }
+
         return "";
     }
 }
