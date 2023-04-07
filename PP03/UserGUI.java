@@ -42,13 +42,20 @@ public class UserGUI extends JPanel {
 
         addEmployeeButton = new JButton("Add Employee");
         addEmployeeButton.addActionListener(e -> {
-            if (hourlyButton.isSelected() || weeklyButton.isSelected()) {
+
+            //Validate
+            String isValid = validateEmployee();
+
+            if (isValid.isEmpty()) {
                 String empStatusString = hourlyButton.isSelected() ? "HOURLY" : "FULLTIME";
                 payRoll.addEmployee("employee", employeeIdTextField.getText(), firstNameTextField.getText(),
                         lastNameTextField.getText(), empStatusString,
                         streetTextField.getText(), houseNumberTextField.getText(),
                         cityTextField.getText(), stateTextField.getText(), zipCodeTextField.getText());
                 setPayRecordFieldsEditability();
+                JOptionPane.showMessageDialog(mainPanel, "Employee Added", "Success", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(mainPanel, "Failed to add employee! Errors with below fields\n" + isValid, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -117,6 +124,18 @@ public class UserGUI extends JPanel {
         radioButtonGroup.add(weeklyButton);
         radioButtonGroup.add(hourlyButton);
         return radioButtonGroup;
+    }
+
+    private String validateEmployee() {
+        return intInput(employeeIdTextField.getText(), "Employee Id")
+                + strInput(firstNameTextField.getText(), "First Name")
+                + strInput(lastNameTextField.getText(), "Last Name")
+                + strInput(streetTextField.getText(), "Street Address")
+                + intInput(houseNumberTextField.getText(), "House Number")
+                + strInput(cityTextField.getText(), "City")
+                + strInput(stateTextField.getText(), "State")
+                + intInput(zipCodeTextField.getText(), "ZipCode")
+                + ((hourlyButton.isSelected() || weeklyButton.isSelected()) ? "" : "Employee Status");
     }
 
     private void setPayRecordFieldsEditability() {
@@ -252,16 +271,27 @@ public class UserGUI extends JPanel {
 
     }// end of Layout method
 
-    void transfer() {
-
-    }// end of transfer action event method
-
-    void updateTextarea() {
-
-    }
-
     void close() {
         System.exit(0);
     }// end of transfer action event method
 
+    private String intInput(String m, String fieldName) {
+        int intUserInput = 0;
+        try {
+            intUserInput = Integer.parseInt(m);
+
+            if (intUserInput < 1) throw new NumberFormatException();
+
+        } catch (NumberFormatException ex) {
+            return fieldName + "\n";
+        }
+        return "";
+    }
+
+    private String strInput(String strUserInput, String fieldName) {
+        if (strUserInput.isEmpty() || strUserInput.equals(" ")) {
+            return fieldName + "\n";
+        }
+        return "";
+    }
 }
