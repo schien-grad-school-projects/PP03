@@ -60,6 +60,13 @@ public class PayRoll {
 
         // Close the file
         input.close();
+        for (int i = 0; i < payRecords.length; i++) {
+            if(payRecords[i] ==  null){
+                return;
+            }
+        }
+        JOptionPane.showMessageDialog(null, "Employee Array Full");
+        System.exit(0);
     }
 
 

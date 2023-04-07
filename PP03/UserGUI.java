@@ -90,8 +90,7 @@ public class UserGUI extends JPanel {
                 }
                 payRoll.displayPayRecord(recordsTextArea, payRecordIdTextField.getText());
                 if (payRoll.isPayRecordFull()) {
-                    payRoll.writeToFile(mainPanel);
-                    System.exit(0);
+                    close();
                 }
                 JOptionPane.showMessageDialog(mainPanel, "Record Added", "Success", JOptionPane.INFORMATION_MESSAGE);
             } else {
@@ -174,7 +173,7 @@ public class UserGUI extends JPanel {
         return intInput(payPeriodIdTextField.getText(), "Pay Period Id")
                 + dateInput(startDateTextField.getText(), "Start Date")
                 + dateInput(endDateTextField.getText(), "End Date")
-                + validateWorkTimeline(startDateTextField.getText(),endDateTextField.getText())
+                + (weeklyButton.isSelected() ?validateWorkTimeline(startDateTextField.getText(),endDateTextField.getText()) :"")
                 + intInput(payRecordIdTextField.getText(),"PayRecordID")
                 + (hourlyButton.isSelected() ? doubleInput(payHoursTextField.getText(),"Pay Hours"):
                 doubleInput(monthlyIncomeTextField.getText(),"Monthly Income"))
@@ -404,13 +403,20 @@ public class UserGUI extends JPanel {
                 monthsBetween *= -1;
             }
 
-            if (monthsBetween == 0 && startDate.compareTo(endDate) == 0) {
+            int numberOfMonths = 0;
+            try{
+                numberOfMonths = Integer.parseInt(numberOfMonthsTextField.getText());
+            }catch (Exception e){
+
+            }
+
+            if ((monthsBetween == 0 && startDate.compareTo(endDate) == 0) ||
+                    numberOfMonths > monthsBetween ) {
                 return invalid; // Less than a month has passed
             } else {
                 return ""; // At least one day has passed
             }
         } catch (ParseException e) {
-            e.printStackTrace();
             return invalid;
         }
     }
