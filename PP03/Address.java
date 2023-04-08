@@ -1,80 +1,76 @@
 package PP03;
 
 public class Address {
-	
-	private String street;
-	private int houseNumber;
-	private String city;
-	private String state;
-	private int zipCode;
-	
-	
-	public Address(String street, int houseNumber, String city, String state, int zipCode) {
-		this.street = street;
-		this.houseNumber = houseNumber;
-		this.city = city;
-		this.state = state;
-		this.zipCode = zipCode;
-	}
+
+    private String street;
+    private int houseNumber;
+    private String city;
+    private String state;
+    private int zipCode;
 
 
-	public String getStreet() {
-		return street;
-	}
+    public Address(String street, int houseNumber, String city, String state, int zipCode) {
+        this.street = street;
+        this.houseNumber = houseNumber;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
+    }
 
 
-	public void setStreet(String street) {
-		this.street = street;
-	}
+    public String getStreet() {
+        return street;
+    }
 
 
-	public int getHouseNumber() {
-		return houseNumber;
-	}
+    public void setStreet(String street) {
+        this.street = street;
+    }
 
 
-	public void setHouseNumber(int houseNumber) {
-		this.houseNumber = houseNumber;
-	}
+    public int getHouseNumber() {
+        return houseNumber;
+    }
 
 
-	public String getCity() {
-		return city;
-	}
+    public void setHouseNumber(int houseNumber) {
+        this.houseNumber = houseNumber;
+    }
 
 
-	public void setCity(String city) {
-		this.city = city;
-	}
+    public String getCity() {
+        return city;
+    }
 
 
-	public String getState() {
-		return state;
-	}
+    public void setCity(String city) {
+        this.city = city;
+    }
 
 
-	public void setState(String state) {
-		this.state = state;
-	}
+    public String getState() {
+        return state;
+    }
 
 
-	public int getZipCode() {
-		return zipCode;
-	}
+    public void setState(String state) {
+        this.state = state;
+    }
 
 
-	public void setZipCode(int zipCode) {
-		this.zipCode = zipCode;
-	}
+    public int getZipCode() {
+        return zipCode;
+    }
 
 
-	@Override
-	public String toString() {
-		return "Address [street=" + street + ", houseNumber=" + houseNumber + ", city=" + city + ", state=" + state
-				+ ", zipCode=" + zipCode + "]";
-	}
-	
-	
-	
+    public void setZipCode(int zipCode) {
+        this.zipCode = zipCode;
+    }
 
+
+    @Override
+    public String toString() {
+        return "StreetAddress='" + street + "', HouseNumber=" + houseNumber + ", City=" + city + ", State=" + state
+                + ", ZipCode=" + zipCode;
+    }
 }

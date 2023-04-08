@@ -43,10 +43,8 @@ public class PayPeriod {
 
     @Override
     public String toString() {
-        return "PayPeriod{" +
-                "pID=" + pID +
-                ", pStartDate=" + pStartDate +
-                ", pEndDate=" + pEndDate +
-                '}';
+        return "PayPeriodID=" + pID +
+                ", StartDate='" + pStartDate +
+                "', EndDate=" + pEndDate + "'";
     }
 }

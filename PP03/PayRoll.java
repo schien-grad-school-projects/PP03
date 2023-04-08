@@ -61,7 +61,7 @@ public class PayRoll {
         // Close the file
         input.close();
         for (int i = 0; i < payRecords.length; i++) {
-            if(payRecords[i] ==  null){
+            if (payRecords[i] == null) {
                 return;
             }
         }
@@ -142,7 +142,7 @@ public class PayRoll {
         PayPeriod payPeriod = new PayPeriod(payPeriodId, pStartDate, pEndDate);
 
         if (payRecords.length <= noRecords) {
-            JOptionPane.showMessageDialog(null, "There are more records in file than records requested");
+            JOptionPane.showMessageDialog(null, "There are more employees in the file \nthan the number requested.\nExiting");
             System.exit(1);
         }
         if (parts[3].contains("<m>")) {
@@ -196,20 +196,17 @@ public class PayRoll {
 
     public void addEmployee(String employeeType, String id, String first, String last, String employeeStatus,
                             String streetAddress, String houseNumber, String city, String state, String zip) {
-
-        //TODO might need to check the types of these fields before creating the object
         employeeArrayList.add(createEmployee(new String[]{employeeType, id, first, last,
                 employeeStatus, streetAddress, houseNumber, city, state, zip}));
     }
 
     public void addPayRecordHourly(String payRecordType, String payRecordID, String employeeId, String payHours, String payRate,
                                    String payPeriodId, String startDate, String endDate) {
-        //TODO might need to check the types of these fields before creating the object
         try {
             createPayRecord(new String[]{payRecordType, payRecordID, employeeId, payHours, payRate,
                     payPeriodId, startDate, endDate}, employeeArrayList);
         } catch (ParseException e) {
-            //TODO add gui
+            System.out.println(e);
         }
     }
 
@@ -220,7 +217,7 @@ public class PayRoll {
             createPayRecord(new String[]{payRecordType, payRecordID, employeeId, formattedMonthlyIncome, numberOfMonths,
                     payPeriodId, startDate, endDate}, employeeArrayList);
         } catch (ParseException e) {
-            //TODO add gui
+            System.out.println(e);
         }
     }
 

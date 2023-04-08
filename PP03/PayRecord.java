@@ -74,18 +74,27 @@ public class PayRecord {
 
 	@Override
 	public String toString() {
-		return "PayRecord{" +
-				"rID=" + rID +
-				", employee=" + employee +
-				", payPeriod=" + payPeriod +
-				", payTax=" + payTax +
-				", payHours=" + payHours +
-				", payRate=" + payRate +
-				", monthlyIncome=" + monthlyIncome +
-				", numMonths=" + numMonths +
-				", grossPay=" + grossPay() +
-				", incomeTax=" + payTax.compIncomeTax(grossPay()) +
-				", netPay=" + netPay() +
-				"}\n";
+
+		if (employee.getEmpStatus() == Status.FullTime) {
+			return "PayRecordID=" + rID +
+					", " + employee +
+					", " + payPeriod +
+					", MonthlyIncome=" + monthlyIncome +
+					", NumMonths=" + numMonths +
+					", GrossPay=" + grossPay() +
+					", IncomeTax=" + payTax.compIncomeTax(grossPay()) +
+					", NetPay=" + netPay() +
+					"\n";
+		} else {
+			return "PayRecordID=" + rID +
+					", " + employee +
+					", " + payPeriod +
+					", Hours=" + payHours +
+					", Rate=" + payRate +
+					", GrossPay=" + grossPay() +
+					", IncomeTax=" + payTax.compIncomeTax(grossPay()) +
+					", NetPay=" + netPay() +
+					"\n";
+		}
 	}
 }

@@ -38,12 +38,8 @@ public class Employee extends Person {
 
     @Override
     public String toString() {
-        return "Employee{" +
-                "eID=" + eID +
-                ", empStatus=" + empStatus +
-                ", fName='" + fName + '\'' +
-                ", lName='" + lName + '\'' +
-                ", address=" + address +
-                '}';
+        return "EmployeeID=" + eID +
+                ", Status=" + empStatus + ", " +
+                super.toString();
     }
 }
