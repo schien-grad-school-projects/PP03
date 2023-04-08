@@ -1,5 +1,7 @@
 package PP03;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class PayPeriod {
@@ -43,8 +45,15 @@ public class PayPeriod {
 
     @Override
     public String toString() {
+        String start = pStartDate.toString();
+        String end = pEndDate.toString();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        start = dateFormat.format(pStartDate);
+        end = dateFormat.format(pEndDate);
+
         return "PayPeriodID=" + pID +
-                ", StartDate='" + pStartDate +
-                "', EndDate=" + pEndDate + "'";
+                ", StartDate='" + start +
+                "', EndDate=" + end + "'";
     }
 }

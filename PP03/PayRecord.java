@@ -79,11 +79,11 @@ public class PayRecord {
 			return "PayRecordID=" + rID +
 					", " + employee +
 					", " + payPeriod +
-					", MonthlyIncome=" + monthlyIncome +
+					", MonthlyIncome=$" + String.format("%.2f", monthlyIncome) +
 					", NumMonths=" + numMonths +
-					", GrossPay=" + grossPay() +
-					", IncomeTax=" + payTax.compIncomeTax(grossPay()) +
-					", NetPay=" + netPay() +
+					", GrossPay=$" + String.format("%.2f", grossPay()) +
+					", IncomeTax=$" + String.format("%.2f", payTax.compIncomeTax(grossPay())) +
+					", NetPay=$" + String.format("%.2f", netPay()) +
 					"\n";
 		} else {
 			return "PayRecordID=" + rID +
@@ -91,9 +91,9 @@ public class PayRecord {
 					", " + payPeriod +
 					", Hours=" + payHours +
 					", Rate=" + payRate +
-					", GrossPay=" + grossPay() +
-					", IncomeTax=" + payTax.compIncomeTax(grossPay()) +
-					", NetPay=" + netPay() +
+					", GrossPay=$" + String.format("%.2f", grossPay()) +
+					", IncomeTax=$" + String.format("%.2f", payTax.compIncomeTax(grossPay())) +
+					", NetPay=$" + String.format("%.2f", netPay()) +
 					"\n";
 		}
 	}
