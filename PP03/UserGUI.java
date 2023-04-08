@@ -1,3 +1,19 @@
+//*********************************************************************
+//*                                                                   *
+//* CIS611                   Spring 2023               Trenton Schien *
+//*                                                    Jose Escobar   *
+//*                      Program Project PP03                         *
+//*                                                                   *
+//*                This programs calculates pay for n employees       *
+//*                User interacts via the GUI                         *
+//*                                                                   *
+//*                                                                   *
+//*                           4-8-2023                                *
+//*                                                                   *
+//*                   Saved in: UserGUI.java                          *
+//*                                                                   *
+//*********************************************************************
+
 package PP03;
 
 import javax.swing.*;
@@ -12,7 +28,7 @@ public class UserGUI extends JPanel {
     private static JTextField firstNameTextField;
     private static JTextField lastNameTextField;
     private static JRadioButton hourlyButton;
-    private static JRadioButton weeklyButton;
+    private static JRadioButton fulltimeButton;
     private static ButtonGroup employeeStatus;
     private static JTextField streetTextField;
     private static JTextField houseNumberTextField;
@@ -71,7 +87,7 @@ public class UserGUI extends JPanel {
                 setPayRecordFieldsEditability();
                 JOptionPane.showMessageDialog(mainPanel, "Employee Added", "Success", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(mainPanel, "Failed to add employee! Errors with below fields\n" + invalidFieldNames, "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mainPanel, "Failed to add employee! Errors with\n" + invalidFieldNames, "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -143,8 +159,8 @@ public class UserGUI extends JPanel {
     private static ButtonGroup addRadioButton(JPanel panel, String text1, String text2, GridBagConstraints gbc, int gridx, int gridy) {
         gbc.gridx = gridx;
         gbc.gridy = gridy;
-        weeklyButton = new JRadioButton(text1);
-        panel.add(weeklyButton, gbc);
+        fulltimeButton = new JRadioButton(text1);
+        panel.add(fulltimeButton, gbc);
 
         gbc.gridx++;
         hourlyButton = new JRadioButton(text2);
@@ -152,7 +168,7 @@ public class UserGUI extends JPanel {
 
         // Create a ButtonGroup to ensure only one radio button is selected at a time
         ButtonGroup radioButtonGroup = new ButtonGroup();
-        radioButtonGroup.add(weeklyButton);
+        radioButtonGroup.add(fulltimeButton);
         radioButtonGroup.add(hourlyButton);
         return radioButtonGroup;
     }
@@ -166,14 +182,17 @@ public class UserGUI extends JPanel {
                 + strInput(cityTextField.getText(), "City")
                 + strInput(stateTextField.getText(), "State")
                 + intInput(zipCodeTextField.getText(), "ZipCode")
-                + ((hourlyButton.isSelected() || weeklyButton.isSelected()) ? "" : "Employee Status");
+                + ((hourlyButton.isSelected() || fulltimeButton.isSelected()) ? "" : "Employee Status");
     }
 
     private String validatePayRecord() {
+
+
+
         return intInput(payPeriodIdTextField.getText(), "Pay Period Id")
                 + dateInput(startDateTextField.getText(), "Start Date")
                 + dateInput(endDateTextField.getText(), "End Date")
-                + (weeklyButton.isSelected() ?validateWorkTimeline(startDateTextField.getText(),endDateTextField.getText()) :"")
+                + validateWorkTimeline(startDateTextField.getText(),endDateTextField.getText())
                 + intInput(payRecordIdTextField.getText(),"PayRecordID")
                 + (hourlyButton.isSelected() ? doubleInput(payHoursTextField.getText(),"Pay Hours"):
                 doubleInput(monthlyIncomeTextField.getText(),"Monthly Income"))
@@ -377,14 +396,14 @@ public class UserGUI extends JPanel {
     }
 
     public static String validateWorkTimeline(String startDateString, String endDateString) {
-        String invalid = "Start End Date do not meet requirment";
+        String invalid = "Date fields do not meet requirement";
         SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         try {
             Date startDate = format.parse(startDateString);
             Date endDate = format.parse(endDateString);
 
             // Ensure start date is before end date
-            if (startDate.after(endDate)) {
+            if (!startDate.before(endDate)) {
                 return invalid;
             }
 
@@ -407,7 +426,7 @@ public class UserGUI extends JPanel {
             try{
                 numberOfMonths = Integer.parseInt(numberOfMonthsTextField.getText());
             }catch (Exception e){
-
+                System.out.println("Error getting text from month field");
             }
 
             if ((monthsBetween == 0 && startDate.compareTo(endDate) == 0) ||
